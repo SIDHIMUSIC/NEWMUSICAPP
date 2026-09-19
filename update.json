@@ -1,0 +1,9 @@
+{
+  "version": "1.0.1",
+  "url": "https://github.com/SIDHIMUSIC/NEWMUSICAPP/releases/latest/download/SIDHI-Music.apk",
+  "notes": [
+    "Improved automatic next-song selection so another version of the same song is skipped.",
+    "Added Android-style in-app Now Bar.",
+    "Added in-app update checking."
+  ]
+}

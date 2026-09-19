@@ -34,8 +34,17 @@ const ACTIONS = [
   { id: 'focus', label: 'Focus', Icon: Target, query: 'focus instrumental concentration' },
 ] as const;
 
+const indiaHour = () => {
+  const now = new Date(Date.now() + 330 * 60 * 1000);
+  return now.getUTCHours();
+};
+
 const greetingFor = (hour: number) =>
-  hour < 12 ? 'Good morning,' : hour < 18 ? 'Good afternoon,' : 'Good evening,';
+  hour < 5 ? 'Good night 🌙' :
+  hour < 12 ? 'Good morning ☀️' :
+  hour < 17 ? 'Good afternoon 🌤️' :
+  hour < 21 ? 'Good evening 🌆' :
+  'Good night 🌙';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
@@ -139,9 +148,9 @@ export default function HomeScreen() {
       <View style={[styles.stickyHeader, { paddingTop: insets.top + SIZES.lg }]}>
         <View style={styles.header}>
           <View>
-            <Text style={styles.greeting}>{greetingFor(new Date().getHours())}</Text>
+            <Text style={styles.greeting}>{greetingFor(indiaHour())}</Text>
             {!!profile.name && <Text style={styles.name}>{profile.name}.</Text>}
-            <Text style={styles.madeBy}>MADE BY SJBUILDS</Text>
+            <Text style={styles.madeBy}>MADE BY SIDHIMUSIC</Text>
           </View>
           <TouchableOpacity
             style={styles.avatar}
@@ -301,7 +310,8 @@ const styles = StyleSheet.create({
   greeting: {
     fontFamily: FONTS.regular,
     fontSize: 20,
-    color: COLORS.text.secondary,
+    color: COLORS.accent.green,
+    fontWeight: '700',
   },
   name: {
     fontFamily: FONTS.medium,

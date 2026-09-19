@@ -1,9 +1,8 @@
 {
-  "version": "1.0.3",
+  "version": "1.0.4",
   "url": "https://github.com/SIDHIMUSIC/NEWMUSICAPP/releases/latest/download/SIDHI-Music.apk",
   "notes": [
-    "Fixed Android prebuild failure caused by invalid branding PNG assets.",
-    "Updated SIDHI Music branding and app icon generation.",
-    "Kept improved next-song selection and India-time greetings."
+    "Fixed Expo Android prebuild failure caused by invalid image assets.",
+    "SIDHI Music playback and branding changes remain included."
   ]
 }

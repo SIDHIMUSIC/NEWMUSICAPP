@@ -2,6 +2,7 @@ import { Platform } from 'react-native';
 import {
   AudioPlayer,
   createAudioPlayer,
+  requestNotificationPermissionsAsync,
   setAudioModeAsync,
   setIsAudioActiveAsync,
 } from 'expo-audio';
@@ -88,6 +89,16 @@ export class PlaybackEngine {
         shouldPlayInBackground: true,
         interruptionMode: 'doNotMix',
       });
+
+      // Android 13+ requires runtime notification permission for the media
+      // playback notification to appear in the notification drawer.
+      if (Platform.OS === 'android') {
+        try {
+          await requestNotificationPermissionsAsync();
+        } catch {
+          // Playback itself must continue even if notification permission fails.
+        }
+      }
 
       // release() deactivates the audio session, and setting the mode does not
       // bring it back. Re-activating explicitly is what lets the engine play

@@ -267,9 +267,34 @@ export const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
     try {
       const related = await MusicService.getRelated(last);
-      const fresh = related.filter(
-        (t) => !queueRef.current.items.some((q) => q.id === t.id)
+
+      // Do not autoplay another version/remix/cover with the same visible
+      // title as the track that just finished. Search results commonly contain
+      // multiple uploads of the same song, and that feels like the same track
+      // restarting to the listener.
+      const normalizeTitle = (title: string) =>
+        title
+          .toLowerCase()
+          .replace(/\([^)]*\)|\[[^\]]*\]/g, ' ')
+          .replace(/[^a-z0-9]+/g, ' ')
+          .trim();
+
+      const currentTitle = normalizeTitle(last.title);
+      const queuedIds = new Set(queueRef.current.items.map((q) => q.id));
+      const queuedTitles = new Set(
+        queueRef.current.items.map((q) => normalizeTitle(q.title))
       );
+
+      const fresh = related.filter((t) => {
+        const title = normalizeTitle(t.title);
+        return (
+          t.id !== last.id &&
+          !queuedIds.has(t.id) &&
+          title !== currentTitle &&
+          !queuedTitles.has(title)
+        );
+      });
+
       if (!fresh.length) return;
 
       queueRef.current.add(fresh.slice(0, 20));

@@ -1,1 +1,59 @@
-import React,{useState}from'react';import{SafeAreaView,View,Text,TextInput,Pressable,FlatList,StyleSheet}from'react-native';import{StatusBar}from'expo-status-bar';import{Search,Heart,Home,Library,Play,Pause,SkipBack,SkipForward}from'lucide-react-native';type Track={id:string;title:string;artist:string};const demo:Track[]=[{id:'1',title:'Your Music Library',artist:'Connect a supported music source'},{id:'2',title:'SIDHI Music',artist:'No in-app ads'}];export default function App(){const[q,setQ]=useState('');const[cur,setCur]=useState<Track|null>(null);const[playing,setPlaying]=useState(false);const data=demo.filter(x=>(x.title+' '+x.artist).toLowerCase().includes(q.toLowerCase()));return <SafeAreaView style={s.root}><StatusBar style="light"/><View style={s.header}><Text style={s.logo}>SIDHI <Text style={s.accent}>MUSIC</Text></Text><Heart color="#fff"/></View><View style={s.search}><Search color="#777" size={20}/><TextInput value={q} onChangeText={setQ} placeholder="Search music..." placeholderTextColor="#777" style={s.input}/></View><Text style={s.heading}>{q?'Search results':'Your music'}</Text><FlatList data={data} keyExtractor={x=>x.id} contentContainerStyle={{paddingBottom:180}} renderItem={({item})=><Pressable style={s.row} onPress={()=>{setCur(item);setPlaying(true)}}><View style={s.cover}><Text style={s.coverText}>♪</Text></View><View style={{flex:1}}><Text style={s.title}>{item.title}</Text><Text style={s.artist}>{item.artist}</Text></View><Play color="#fff" size={20}/></Pressable>}/>{cur&&<View style={s.player}><View style={s.mini}><View style={s.coverSmall}><Text style={s.coverText}>♪</Text></View><View style={{flex:1}}><Text style={s.title} numberOfLines={1}>{cur.title}</Text><Text style={s.artist} numberOfLines={1}>{cur.artist}</Text></View><Pressable onPress={()=>setPlaying(!playing)}>{playing?<Pause color="#fff"/>:<Play color="#fff"/>}</Pressable></View><View style={s.controls}><SkipBack color="#fff"/><Pressable style={s.play}><Play fill="#000" color="#000" size={22}/></Pressable><SkipForward color="#fff"/></View></View>}<View style={s.nav}><Home color="#fff"/><Library color="#777"/></View></SafeAreaView>}const s=StyleSheet.create({root:{flex:1,backgroundColor:'#050505',paddingHorizontal:18},header:{height:70,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},logo:{color:'#fff',fontSize:24,fontWeight:'900'},accent:{color:'#b8ff2c'},search:{height:50,borderRadius:16,backgroundColor:'#151515',flexDirection:'row',alignItems:'center',paddingHorizontal:15,gap:10},input:{flex:1,color:'#fff',fontSize:16},heading:{color:'#fff',fontSize:22,fontWeight:'800',marginTop:28,marginBottom:12},row:{flexDirection:'row',alignItems:'center',paddingVertical:10,gap:14},cover:{width:58,height:58,borderRadius:12,backgroundColor:'#202020',alignItems:'center',justifyContent:'center'},coverSmall:{width:48,height:48,borderRadius:10,backgroundColor:'#202020',alignItems:'center',justifyContent:'center'},coverText:{color:'#b8ff2c',fontSize:25,fontWeight:'900'},title:{color:'#fff',fontSize:15,fontWeight:'700'},artist:{color:'#777',fontSize:13,marginTop:4},player:{position:'absolute',left:12,right:12,bottom:68,backgroundColor:'#151515',borderRadius:18,padding:12},mini:{flexDirection:'row',alignItems:'center',gap:12},controls:{flexDirection:'row',alignItems:'center',justifyContent:'center',gap:35,paddingTop:10},play:{width:42,height:42,borderRadius:21,backgroundColor:'#b8ff2c',alignItems:'center',justifyContent:'center'},nav:{position:'absolute',left:0,right:0,bottom:0,height:65,backgroundColor:'#050505',borderTopWidth:1,borderTopColor:'#181818',flexDirection:'row',alignItems:'center',justifyContent:'space-around'}});
+import React, { useEffect } from 'react';
+import { StyleSheet, View, Platform } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { RootNavigator } from './src/navigation/RootNavigator';
+import { PlayerProvider } from './src/hooks/usePlayer';
+import { LibraryProvider } from './src/hooks/useLibrary';
+import { COLORS } from './src/constants/theme';
+import { getPlatformInfo, isNoteNativeAvailable } from './modules/note-native';
+
+export default function App() {
+  // Proof-of-connection for the Android native module. Dev-only, no UI impact.
+  useEffect(() => {
+    if (__DEV__) {
+      console.log(
+        '[NoteNative] available:',
+        isNoteNativeAvailable(),
+        'getPlatformInfo():',
+        getPlatformInfo()
+      );
+    }
+  }, []);
+
+  return (
+    <SafeAreaProvider>
+      <LibraryProvider>
+        <PlayerProvider>
+          <View style={styles.webWrapper}>
+            <View style={styles.appContainer}>
+              <RootNavigator />
+              <StatusBar style="light" />
+            </View>
+          </View>
+        </PlayerProvider>
+      </LibraryProvider>
+    </SafeAreaProvider>
+  );
+}
+
+const styles = StyleSheet.create({
+  webWrapper: {
+    flex: 1,
+    backgroundColor: '#000000', // Darker background for the empty space on desktop
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  appContainer: {
+    flex: 1,
+    width: '100%',
+    maxWidth: Platform.OS === 'web' ? 420 : '100%',
+    maxHeight: Platform.OS === 'web' ? 900 : '100%',
+    backgroundColor: COLORS.background,
+    overflow: 'hidden',
+    // Add subtle borders and rounded corners to look like a phone screen on Web
+    borderWidth: Platform.OS === 'web' ? 1 : 0,
+    borderColor: 'rgba(255,255,255,0.1)',
+    borderRadius: Platform.OS === 'web' ? 40 : 0,
+  }
+});

@@ -9,6 +9,7 @@ import ProfileSetupScreen from '../screens/ProfileSetup';
 import PlaylistDetailScreen from '../screens/PlaylistDetail';
 import SettingsScreen from '../screens/Settings';
 import NowPlayingScreen from '../screens/NowPlaying';
+import NowBar from '../components/player/NowBar';
 
 const Stack = createNativeStackNavigator();
 
@@ -44,6 +45,7 @@ export const RootNavigator = () => {
           options={{ presentation: 'fullScreenModal' }}
         />
       </Stack.Navigator>
+      <NowBar />
     </NavigationContainer>
   );
 };

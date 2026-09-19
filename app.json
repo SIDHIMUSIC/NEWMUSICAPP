@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name":"SIDHI Music",
-    "slug":"sidhi-music",
+    "name": "SIDHI Music",
+    "slug": "sidhi-music",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
@@ -30,7 +30,7 @@
         "android.permission.FOREGROUND_SERVICE",
         "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
       ],
-      "package":"com.sidhimusic.app"
+      "package": "com.sidhimusic.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"

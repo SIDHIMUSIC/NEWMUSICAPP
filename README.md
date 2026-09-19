@@ -8,7 +8,7 @@ No account. No ads. No backend. No tracking.
 
 [![License: GPL v3 or later](https://img.shields.io/badge/License-GPLv3%2B-blue.svg)](LICENSE)
 [![Platform: Android](https://img.shields.io/badge/Platform-Android-3DDC84.svg)](#download)
-[![Release](https://img.shields.io/github/v/release/SJbuilds04/NOTE?include_prereleases)](https://github.com/SJbuilds04/NOTE/releases/latest)
+[![Release](https://img.shields.io/github/v/release/SJbuilds04/NOTE?include_prereleases)](https://github.com/SIDHIMUSIC/NEWMUSICAPP/releases/latest)
 
 </div>
 
@@ -16,7 +16,7 @@ No account. No ads. No backend. No tracking.
 
 <div align="center">
 
-<a href="https://github.com/SJbuilds04/NOTE/releases/latest">
+<a href="https://github.com/SIDHIMUSIC/NEWMUSICAPP/releases/latest">
   <img src="docs/preview.jpg" alt="SIDHI Music — search, queue, and play with the screen off" width="820">
 </a>
 
@@ -55,9 +55,9 @@ except the requests needed to search for and stream the audio you asked for.
 
 ## Download
 
-Grab the signed APK from the **[latest release](https://github.com/SJbuilds04/NOTE/releases/latest)**:
+Grab the signed APK from the **[latest release](https://github.com/SIDHIMUSIC/NEWMUSICAPP/releases/latest)**:
 
-**[⬇ Download NOTE-v1.0.0.apk](https://github.com/SJbuilds04/NOTE/releases/latest/download/NOTE-v1.0.0.apk)**
+**[⬇ Download SIDHI-Music-v1.0.0.apk](https://github.com/SIDHIMUSIC/NEWMUSICAPP/releases/latest/download/SIDHI-Music-v1.0.0.apk)**
 
 Verify it before installing:
 
@@ -67,10 +67,10 @@ SHA-256  ca911b5a49ead0f3129a1748a575fb8c5b746ccd6ed035c42441283ac536ee52
 
 ```bash
 # Linux / macOS
-sha256sum NOTE-v1.0.0.apk
+sha256sum SIDHI-Music-v1.0.0.apk
 
 # Windows (PowerShell)
-Get-FileHash NOTE-v1.0.0.apk -Algorithm SHA256
+Get-FileHash SIDHI-Music-v1.0.0.apk -Algorithm SHA256
 ```
 
 SIDHI Music is **not distributed through Google Play**, so you install it by sideloading. Android
@@ -94,7 +94,7 @@ You do not have to trust the published APK — you can build your own.
 **Steps**
 
 ```bash
-git clone https://github.com/SJbuilds04/NOTE.git
+git clone https://github.com/SIDHIMUSIC/NEWMUSICAPP.git
 cd NOTE
 npm install
 

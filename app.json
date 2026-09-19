@@ -1,1 +1,54 @@
-{"expo":{"name":"SIDHI Music","slug":"sidhi-music","version":"1.0.0","orientation":"portrait","userInterfaceStyle":"dark","backgroundColor":"#050505","android":{"package":"com.sidhimusic.app","permissions":["INTERNET","WAKE_LOCK","FOREGROUND_SERVICE","FOREGROUND_SERVICE_MEDIA_PLAYBACK"]},"plugins":[["expo-audio",{"enableBackgroundPlayback":true,"recordAudioAndroid":false}]]}}
+{
+  "expo": {
+    "name":"SIDHI Music",
+    "slug":"sidhi-music",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "audio"
+        ]
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#000000",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "INTERNET",
+        "WAKE_LOCK",
+        "FOREGROUND_SERVICE",
+        "FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+      ],
+      "package":"com.sidhimusic.app"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-font",
+      [
+        "expo-audio",
+        {
+          "enableBackgroundPlayback": true,
+          "recordAudioAndroid": false
+        }
+      ],
+      "expo-asset",
+      "./plugins/withCoreLibraryDesugaring",
+      "./plugins/withAndroidAbis",
+      "./plugins/withReleaseSigning"
+    ],
+    "backgroundColor": "#050707"
+  }
+}

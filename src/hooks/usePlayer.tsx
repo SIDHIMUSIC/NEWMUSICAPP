@@ -228,6 +228,45 @@ export const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     [bumpQueue, persistQueue]
   );
 
+  const normalizeTrackTitle = useCallback((title: string) =>
+    title
+      .toLowerCase()
+      .replace(/\([^)]*\)|\[[^\]]*\]/g, ' ')
+      .replace(/[^a-z0-9]+/g, ' ')
+      .trim(), []);
+
+  const advanceToDifferentTitle = useCallback((auto = false): Track | null => {
+    const last = queueRef.current.current;
+    if (!last) return queueRef.current.next(auto);
+
+    // Repeat-one is an explicit user choice, so it must still replay.
+    if (auto && queueRef.current.repeat === 'one') {
+      return queueRef.current.next(true);
+    }
+
+    const currentTitle = normalizeTrackTitle(last.title);
+    const maxChecks = Math.max(1, queueRef.current.length);
+    let nextTrack = queueRef.current.next(auto);
+    let checks = 0;
+
+    while (
+      nextTrack &&
+      normalizeTrackTitle(nextTrack.title) === currentTitle &&
+      checks < maxChecks
+    ) {
+      checks += 1;
+      nextTrack = queueRef.current.next(auto);
+    }
+
+    // If the whole queue only contains versions of the same song, treat it as
+    // the end instead of looping another version forever.
+    if (nextTrack && normalizeTrackTitle(nextTrack.title) === currentTitle) {
+      return null;
+    }
+
+    return nextTrack;
+  }, [normalizeTrackTitle]);
+
   // ---- engine wiring ----------------------------------------------------
 
   useEffect(() => {
@@ -235,7 +274,7 @@ export const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
     playbackEngine.on('onComplete', () => {
       // `auto` so repeat-one replays rather than advances.
-      const nextTrack = queueRef.current.next(true);
+      const nextTrack = advanceToDifferentTitle(true);
       bumpQueue();
       persistQueue();
 
@@ -279,14 +318,14 @@ export const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) 
           .replace(/[^a-z0-9]+/g, ' ')
           .trim();
 
-      const currentTitle = normalizeTitle(last.title);
+      const currentTitle = normalizeTrackTitle(last.title);
       const queuedIds = new Set(queueRef.current.items.map((q) => q.id));
       const queuedTitles = new Set(
-        queueRef.current.items.map((q) => normalizeTitle(q.title))
+        queueRef.current.items.map((q) => normalizeTrackTitle(q.title))
       );
 
       const fresh = related.filter((t) => {
-        const title = normalizeTitle(t.title);
+        const title = normalizeTrackTitle(t.title);
         return (
           t.id !== last.id &&
           !queuedIds.has(t.id) &&
@@ -450,7 +489,7 @@ export const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   }, [bumpQueue, currentTrack, loadCurrent, status.isPlaying]);
 
   const next = useCallback(() => {
-    const nextTrack = queueRef.current.next(false);
+    const nextTrack = advanceToDifferentTitle(false);
     bumpQueue();
     persistQueue();
 
@@ -459,7 +498,7 @@ export const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       return;
     }
     void loadCurrent({ autoPlay: true });
-  }, [bumpQueue, extendWithRelated, loadCurrent, persistQueue]);
+  }, [advanceToDifferentTitle, bumpQueue, extendWithRelated, loadCurrent, persistQueue]);
 
   const previous = useCallback(() => {
     // Standard behaviour: restart the track if we are more than 3s in.

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Keyboard,
   Linking,
@@ -10,12 +10,13 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ChevronLeft, ExternalLink, User } from 'lucide-react-native';
+import { ChevronLeft, ExternalLink, RefreshCw, User } from 'lucide-react-native';
 import Constants from 'expo-constants';
 import { useNavigation } from '@react-navigation/native';
 import { COLORS, SIZES, FONTS } from '../constants/theme';
 import { Gender } from '../services/LibraryService';
 import { useLibrary } from '../hooks/useLibrary';
+import { AppUpdate, checkForUpdate, getCurrentVersion } from '../services/UpdateService';
 
 const GENDERS: { value: Gender; label: string }[] = [
   { value: 'male', label: 'Male' },
@@ -41,9 +42,23 @@ export default function SettingsScreen() {
   const { profile, saveProfile, history, playlists, liked } = useLibrary();
 
   const [name, setName] = useState(profile.name);
+  const [update, setUpdate] = useState<AppUpdate | null>(null);
+  const [checkingUpdate, setCheckingUpdate] = useState(false);
+  const [updateMessage, setUpdateMessage] = useState('Checking for updates…');
 
-  const version =
-    Constants.expoConfig?.version ?? Constants.manifest2?.extra?.expoClient?.version ?? '1.0.0';
+  const version = getCurrentVersion();
+
+  const checkUpdate = useCallback(async () => {
+    setCheckingUpdate(true);
+    const latest = await checkForUpdate();
+    setUpdate(latest);
+    setUpdateMessage(latest ? `SIDHI Music ${latest.version} is available` : 'You are using the latest version.');
+    setCheckingUpdate(false);
+  }, []);
+
+  useEffect(() => {
+    void checkUpdate();
+  }, [checkUpdate]);
 
   const commitName = useCallback(() => {
     const trimmed = name.trim();
@@ -132,6 +147,45 @@ export default function SettingsScreen() {
             <Stat value={playlists.length} label="Playlists" />
             <Stat value={history.length} label="Listens" />
           </View>
+        </View>
+
+        {/* ---- Updates ---- */}
+        <Text style={styles.sectionLabel}>UPDATES</Text>
+        <View style={styles.card}>
+          <View style={styles.updateHeader}>
+            <View style={styles.updateText}>
+              <Text style={styles.legalTitle}>SIDHI Music updates</Text>
+              <Text style={styles.legalBody}>
+                {updateMessage}
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={styles.refreshButton}
+              onPress={() => void checkUpdate()}
+              disabled={checkingUpdate}
+            >
+              <RefreshCw
+                color={COLORS.text.primary}
+                size={19}
+                style={checkingUpdate ? styles.spinning : undefined}
+              />
+            </TouchableOpacity>
+          </View>
+
+          {update && (
+            <TouchableOpacity
+              style={styles.downloadButton}
+              activeOpacity={0.8}
+              onPress={() => open(update.url)}
+            >
+              <Text style={styles.downloadButtonText}>Download update {update.version}</Text>
+              <ExternalLink color={COLORS.background} size={17} />
+            </TouchableOpacity>
+          )}
+
+          <Text style={styles.updateHint}>
+            New APK releases are published through the SIDHI Music GitHub release page.
+          </Text>
         </View>
 
         {/* ---- About ---- */}
@@ -373,6 +427,50 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     color: COLORS.text.secondary,
     marginBottom: SIZES.sm,
+  },
+  updateHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  updateText: {
+    flex: 1,
+    paddingRight: SIZES.sm,
+  },
+  refreshButton: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.surfaceLight,
+    borderWidth: 1,
+    borderColor: COLORS.glassBorder,
+  },
+  spinning: {
+    opacity: 0.45,
+  },
+  downloadButton: {
+    marginTop: SIZES.sm,
+    paddingVertical: SIZES.sm + 4,
+    paddingHorizontal: SIZES.md,
+    borderRadius: SIZES.radius.sm,
+    backgroundColor: COLORS.text.primary,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: SIZES.sm,
+  },
+  downloadButtonText: {
+    fontFamily: FONTS.medium,
+    fontSize: 14,
+    color: COLORS.background,
+  },
+  updateHint: {
+    fontFamily: FONTS.regular,
+    fontSize: 11,
+    lineHeight: 16,
+    color: COLORS.text.muted,
+    marginTop: SIZES.sm,
   },
   footer: {
     fontFamily: FONTS.medium,

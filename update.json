@@ -1,10 +1,9 @@
 {
-  "version": "1.0.2",
+  "version": "1.0.3",
   "url": "https://github.com/SIDHIMUSIC/NEWMUSICAPP/releases/latest/download/SIDHI-Music.apk",
   "notes": [
-    "SIDHI Music branding is now used throughout the app.",
-    "Optional profile setup lets you continue without entering a name.",
-    "Improved India-time greetings with day-aware messages.",
-    "Improved automatic next-song selection to avoid another version of the same song."
+    "Fixed Android prebuild failure caused by invalid branding PNG assets.",
+    "Updated SIDHI Music branding and app icon generation.",
+    "Kept improved next-song selection and India-time greetings."
   ]
 }

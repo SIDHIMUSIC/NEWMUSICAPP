@@ -46,6 +46,13 @@ const greetingFor = (hour: number) =>
   hour < 21 ? 'Good evening 🌆' :
   'Good night 🌙';
 
+const greetingColor = (hour: number) =>
+  hour < 5 ? '#B794F4' :
+  hour < 12 ? '#FFD166' :
+  hour < 17 ? '#FFB86B' :
+  hour < 21 ? '#FF8C69' :
+  '#B794F4';
+
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
@@ -148,7 +155,7 @@ export default function HomeScreen() {
       <View style={[styles.stickyHeader, { paddingTop: insets.top + SIZES.lg }]}>
         <View style={styles.header}>
           <View>
-            <Text style={styles.greeting}>{greetingFor(indiaHour())}</Text>
+            <Text style={[styles.greeting, { color: greetingColor(indiaHour()) }]}>{greetingFor(indiaHour())}</Text>
             {!!profile.name && <Text style={styles.name}>{profile.name}.</Text>}
             <Text style={styles.madeBy}>MADE BY SIDHIMUSIC</Text>
           </View>

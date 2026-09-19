@@ -192,7 +192,7 @@ export default function SettingsScreen() {
         <View style={styles.card}>
           <Row label="Version" value={`${version}`} />
           <Divider />
-          <Row label="Made by" value="SJBUILDS" />
+          <Row label="Made by" value="SIDHIMUSIC" />
           <Divider />
           <LinkRow label="Source code" onPress={() => open(REPO_URL)} />
         </View>
@@ -227,7 +227,7 @@ export default function SettingsScreen() {
           <LinkRow label="NewPipeExtractor on GitHub" onPress={() => open(NEWPIPE_URL)} />
         </View>
 
-        <Text style={styles.footer}>MADE BY SJBUILDS</Text>
+        <Text style={styles.footer}>MADE BY SIDHIMUSIC</Text>
       </ScrollView>
     </View>
   );
